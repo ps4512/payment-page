@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SuccessPage from './SuccessPage';
+import FailurePage from './FailurePage';
 
-const PaymentFlow = ({ publicKey }) => {
+const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => {
   const [paymentSession, setPaymentSession] = useState(null);
+  const [paymentResponse, setPaymentResponse] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const createPaymentSession = async () => {
       try {
         const response = await axios.post('http://localhost:5002/create-payment-session', {
-            "amount": 1000,
-            "currency": "GBP",
-            "reference": "ORD-123A",
-            "processing_channel_id": "pc_56oh7ociwgkebnldq7t2kxpc4i",
-            "billing": {
-              "address": {
-                "address_line1": "123 High St.",
-                "address_line2": "Flat 456",
-                "city": "London",
-                "zip": "SW1A 1AA",
-                "country": "GB"              }
-            },
-            "customer": {
-              "name": "Jia Tsang",
-              "email": "jia.tsang@example.com"
-            },
-            "success_url": "http://localhost:3000",
-            "failure_url": "http://localhost:3000"
-          });
+          amount: totalAmount,
+          currency: "GBP",
+          reference: "ORD-123A",
+          processing_channel_id: "pc_7ymlzdvrgi3ufljhfzfauz3un4",
+          billing: {
+            address: {
+              country: "GB"
+            }
+          },
+          customer: {
+            name: customerName,
+            email: customerEmail
+          },
+          success_url: "http://localhost:3000",
+          failure_url: "http://localhost:3000"
+        });
         setPaymentSession(response.data);
       } catch (error) {
         console.error('Error creating payment session', error);
@@ -39,53 +40,60 @@ const PaymentFlow = ({ publicKey }) => {
   useEffect(() => {
     const initializeCheckout = async () => {
       if (paymentSession) {
-        const { loadCheckoutWebComponents } = await import('@checkout.com/checkout-web-components');
-        console.log(paymentSession)
-        const checkout = await loadCheckoutWebComponents({
+        try {
+          const { loadCheckoutWebComponents } = await import('@checkout.com/checkout-web-components');
+          const checkout = await loadCheckoutWebComponents({
             publicKey,
             environment: "sandbox",
-            locale: "en-GB",
+            locale: 'en-GB',
             paymentSession,
             onReady: () => {
               console.log("onReady");
             },
-            onPaymentCompleted: (_component, paymentResponse) => {
-              console.log("Create Payment with PaymentId: ", paymentResponse.id);
+            onPaymentCompleted: async (_component, paymentResponse) => {
+              console.log('Payment completed with PaymentId:', paymentResponse.id);
+              const paymentResult = await handlePayment(paymentResponse.id);
+              setPaymentResponse(paymentResult);
+              console.log("paymentResult: abc" + paymentResult)
             },
             onChange: (component) => {
-              console.log(
-                `onChange() -> isValid: "${component.isValid()}" for "${
-                  component.type
-                }"`,
-              );
+              console.log(`onChange() -> isValid: "${component.isValid()}" for "${component.type}"`);
             },
             onError: (component, error) => {
-              console.log("onError + abc", error, "Component", component.type);
-            },
-            onPaymentCompleted: async (_component, paymentResponse) => {
-                console.log('Payment completed with PaymentId:', paymentResponse.id);
-                // Handle synchronous payments
-                await handlePayment(paymentResponse.id);
-              },
+              console.log("onError", error, "Component", component.type);
+              setError(error.message);
+            }
           });
-        
 
-        const flowComponent = checkout.create('flow');
-        flowComponent.mount('#flow-container');
+          const flowComponent = checkout.create('flow');
+          flowComponent.mount('#flow-container');
+        } catch (error) {
+          console.error('CheckoutWebComponents failed to load:', error);
+        }
       }
     };
 
     const handlePayment = async (paymentId) => {
-        try {
-          const response = await axios.get(`http://localhost:5000/payment-details/${paymentId}`);
-          console.log('Payment Details:', response.data);
-        } catch (error) {
-          console.error('Error fetching payment details', error);
-        }
-      };
+      try {
+        const response = await axios.get(`http://localhost:5002/payment-details/${paymentId}`);
+        console.log('Payment Details:', response.data);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching payment details', error);
+        setError(error.message);
+      }
+    };
 
     initializeCheckout();
   }, [paymentSession, publicKey]);
+
+  if (paymentResponse) {
+    return <SuccessPage amount={paymentResponse.amount} currency={paymentResponse.currency} />;
+  }
+
+  if (error) {
+    return <FailurePage />;
+  }
 
   return (
     <div>

@@ -1,38 +1,36 @@
-.App {
+/* App.css */
+.container {
+  padding: 20px;
+}
+
+.success-page, .failure-page {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.success-page h1 {
+  color: #4caf50;
+}
+
+.failure-page h1 {
+  color: #f44336;
+}
+
+.error-message {
+  color: #f44336;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.order-summary {
+  margin: 20px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.order-summary h2 {
+  text-align: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.payment-page-title {
+  text-align: center;
 }
