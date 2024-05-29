@@ -25,7 +25,7 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
             name: customerName,
             email: customerEmail
           },
-          success_url: "http://localhost:3000",
+          success_url: "http://localhost:3000/success",
           failure_url: "http://localhost:3000"
         });
         setPaymentSession(response.data);
@@ -67,6 +67,15 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
 
           const flowComponent = checkout.create('flow');
           flowComponent.mount('#flow-container');
+
+              // Establish WebSocket connection
+          const ws = new WebSocket('ws://localhost:5002');
+
+          ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log('WebSocket message received:', data);
+          };
+
         } catch (error) {
           console.error('CheckoutWebComponents failed to load:', error);
         }
