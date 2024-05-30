@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 const AsyncPaymentStatus = () => {
   const [paymentStatus, setPaymentStatus] = useState('Fetching payment status...');
   const POLLING_INTERVAL = 3000; // Poll every 3 seconds
-  const intervalId = useRef(null); // Create a ref to store the interval ID
+  const intervalRef = useRef(null); 
 
   useEffect(() => {
     const fetchPaymentStatus = async () => {
@@ -16,17 +16,16 @@ const AsyncPaymentStatus = () => {
       }
     };
 
-    intervalId.current = setInterval(() => {
+    intervalRef.current = setInterval(() => {
         fetchPaymentStatus();
       }, POLLING_INTERVAL);
   
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId.current);
+    return () => clearInterval(intervalRef.current);
   }, []);
 
   useEffect(() => {
     if (paymentStatus === 'payment_captured' || paymentStatus === 'payment_declined') {
-        clearInterval(intervalId.current); // Clear the interval
+        clearInterval(intervalRef.current);
     }
   }, [paymentStatus]);
 
