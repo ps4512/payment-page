@@ -35,7 +35,7 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
     };
 
     createPaymentSession();
-  }, []);
+  });
 
   useEffect(() => {
     const initializeCheckout = async () => {
@@ -51,10 +51,10 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
               console.log("onReady");
             },
             onPaymentCompleted: async (_component, paymentResponse) => {
-              console.log('Payment completed with PaymentId:', paymentResponse.id);
+              console.log('Payment completed with Payment ID:', paymentResponse.id);
               const paymentResult = await handlePayment(paymentResponse.id);
               setPaymentResponse(paymentResult);
-              console.log("paymentResult: abc" + paymentResult)
+              console.log("paymentResult: " + paymentResult)
             },
             onChange: (component) => {
               console.log(`onChange() -> isValid: "${component.isValid()}" for "${component.type}"`);
@@ -67,14 +67,6 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
 
           const flowComponent = checkout.create('flow');
           flowComponent.mount('#flow-container');
-
-              // Establish WebSocket connection
-          const ws = new WebSocket('ws://localhost:5002');
-
-          ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('WebSocket message received:', data);
-          };
 
         } catch (error) {
           console.error('CheckoutWebComponents failed to load:', error);

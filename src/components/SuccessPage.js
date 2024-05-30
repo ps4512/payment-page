@@ -1,4 +1,3 @@
-// SuccessPage.js
 import React from 'react';
 
 const SuccessPage = ({ amount, currency }) => {

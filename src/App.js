@@ -6,8 +6,27 @@ import checkout from './checkout.png';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AsyncPaymentStatus from './AsyncPaymentStatus';
 
-const MainPage = ({ isSubmitted, customerName, customerEmail, item, handleNameChange, handleEmailChange, handleFormSubmit }) => {
+const MainPage = () => {
+  const [customerName, setCustomerName] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const item = { description: 'Green T-shirt', unitPrice: 1, quantity: 2 };
+
   const publicKey = 'pk_sbox_ahx7jdh2ompwcbpudatt76jcsq4';
+
+  const handleNameChange = (e) => {
+    setCustomerName(e.target.value);
+  };
+
+  const handleEmailChange = (e) => {
+    setCustomerEmail(e.target.value);
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitted(true);
+  };
 
   return (
     <div className="App">
@@ -53,42 +72,11 @@ const MainPage = ({ isSubmitted, customerName, customerEmail, item, handleNameCh
 };
 
 function App() {
-  const [customerName, setCustomerName] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const item = { description: 'Green T-shirt', unitPrice: 1, quantity: 2 };
-
-  const handleNameChange = (e) => {
-    setCustomerName(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setCustomerEmail(e.target.value);
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitted(true);
-  };
 
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <MainPage
-              isSubmitted={isSubmitted}
-              customerName={customerName}
-              customerEmail={customerEmail}
-              item={item}
-              handleNameChange={handleNameChange}
-              handleEmailChange={handleEmailChange}
-              handleFormSubmit={handleFormSubmit}
-            />
-          }
-        />
+        <Route path="/" element={<MainPage/>}/>
         <Route path="/result" element={<AsyncPaymentStatus />} />
       </Routes>
     </Router>
