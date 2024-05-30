@@ -25,8 +25,8 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
             name: customerName,
             email: customerEmail
           },
-          success_url: "http://localhost:3000/success",
-          failure_url: "http://localhost:3000"
+          success_url: "http://localhost:3000/result",
+          failure_url: "http://localhost:3000/result"
         });
         setPaymentSession(response.data);
       } catch (error) {

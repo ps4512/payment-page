@@ -3,8 +3,8 @@ import PaymentFlow from './components/PaymentFlow';
 import './App.css';
 import logo from './logo.png'; 
 import checkout from './checkout.png'; 
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
-import Success from './Success';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AsyncPaymentStatus from './AsyncPaymentStatus';
 
 const MainPage = ({ isSubmitted, customerName, customerEmail, item, handleNameChange, handleEmailChange, handleFormSubmit }) => {
   const publicKey = 'pk_sbox_ahx7jdh2ompwcbpudatt76jcsq4';
@@ -89,7 +89,7 @@ function App() {
             />
           }
         />
-        <Route path="/success" element={<Success />} />
+        <Route path="/result" element={<AsyncPaymentStatus />} />
       </Routes>
     </Router>
   );

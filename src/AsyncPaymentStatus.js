@@ -1,9 +1,8 @@
-// Success.js
 import React, { useEffect, useState, useRef } from 'react';
 
-const Success = () => {
+const AsyncPaymentStatus = () => {
   const [paymentStatus, setPaymentStatus] = useState('Fetching payment status...');
-  const POLLING_INTERVAL = 2000; // Poll every 2 seconds
+  const POLLING_INTERVAL = 3000; // Poll every 3 seconds
   const intervalId = useRef(null); // Create a ref to store the interval ID
 
   useEffect(() => {
@@ -17,23 +16,16 @@ const Success = () => {
       }
     };
 
-    // Initial fetch
-    const clearAndFetch = async () => {
-        await setPaymentStatus('Fetching payment status...');
-        await fetchPaymentStatus();
-    }
-
-    // Polling interval
     intervalId.current = setInterval(() => {
         fetchPaymentStatus();
       }, POLLING_INTERVAL);
   
-      // Cleanup interval on component unmount
+    // Cleanup interval on component unmount
     return () => clearInterval(intervalId.current);
   }, []);
 
   useEffect(() => {
-    if (paymentStatus === 'payment_captured') {
+    if (paymentStatus === 'payment_captured' || paymentStatus === 'payment_declined') {
         clearInterval(intervalId.current); // Clear the interval
     }
   }, [paymentStatus]);
@@ -41,10 +33,9 @@ const Success = () => {
 
   return (
     <div>
-      <h1>Payment Result</h1>
-      <p>Payment Status: {paymentStatus}</p>
+      <h1>Payment Status: {paymentStatus}</h1>
     </div>
   );
 };
 
-export default Success;
+export default AsyncPaymentStatus;

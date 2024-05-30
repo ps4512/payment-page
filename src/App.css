@@ -1,36 +1,7 @@
-/* App.css */
-.container {
-  padding: 20px;
-}
-
-.success-page, .failure-page {
-  text-align: center;
-  margin-top: 50px;
-}
-
 .success-page h1 {
   color: #4caf50;
 }
 
 .failure-page h1 {
   color: #f44336;
-}
-
-.error-message {
-  color: #f44336;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.order-summary {
-  margin: 20px;
-  text-align: center;
-}
-
-.order-summary h2 {
-  text-align: center;
-}
-
-.payment-page-title {
-  text-align: center;
 }
