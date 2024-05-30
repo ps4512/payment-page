@@ -45,7 +45,7 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
           const checkout = await loadCheckoutWebComponents({
             publicKey,
             environment: "sandbox",
-            locale: 'en-GB',
+            locale: 'zh',
             paymentSession,
             onReady: () => {
               console.log("onReady");
