@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PaymentFlow from './components/PaymentFlow';
 import './App.css';
 import logo from './logo.png'; 
 import checkout from './checkout.png'; 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AsyncPaymentStatus from './AsyncPaymentStatus';
-import axios from 'axios';
-
 
 const MainPage = () => {
   const [customerName, setCustomerName] = useState('');
@@ -29,6 +27,7 @@ const MainPage = () => {
     e.preventDefault();
     setIsSubmitted(true);
   };
+
 
   return (
     <div className="App">
@@ -74,16 +73,6 @@ const MainPage = () => {
 };
 
 function App() {
-  useEffect(() => {
-    const fetchPaymentStatus = async () => {
-      try {
-        await axios.post('http://localhost:5002/clear-payment-status');
-      } catch (error) {
-        console.log('clear status failed');
-      }
-    };
-    fetchPaymentStatus();
-  }, []);
 
   return (
     <Router>

@@ -88,6 +88,18 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
     initializeCheckout();
   }, [paymentSession, publicKey]);
 
+  useEffect(() => {
+    const clearPaymentStatus = async () => {
+      try {
+        console.log("clearing payment status")
+        await axios.post('http://localhost:5002/clear-payment-status');
+      } catch (error) {
+        console.log('clear status failed');
+      }
+    };
+    clearPaymentStatus();
+  }, []);
+
   if (paymentResponse) {
     return <SuccessPage amount={paymentResponse.amount} currency={paymentResponse.currency} />;
   }

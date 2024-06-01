@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 const AsyncPaymentStatus = () => {
-  const [paymentStatus, setPaymentStatus] = useState('Fetching payment status...');
+  const [paymentStatus, setPaymentStatus] = useState('Pending...');
   const POLLING_INTERVAL = 3000; // Poll every 3 seconds
   const intervalRef = useRef(null); 
 
