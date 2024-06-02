@@ -11,7 +11,7 @@ const MainPage = () => {
   const [customerEmail, setCustomerEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const item = { description: 'Green T-shirt', unitPrice: 1, quantity: 2 };
+  const item = { description: 'Green T-shirt', unitPrice: 100, quantity: 2 };
 
   const publicKey = 'pk_sbox_ahx7jdh2ompwcbpudatt76jcsq4';
 

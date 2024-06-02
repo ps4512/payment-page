@@ -35,7 +35,7 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
     };
 
     createPaymentSession();
-  });
+  }, [customerEmail, customerName, totalAmount]);
 
   useEffect(() => {
     const initializeCheckout = async () => {
