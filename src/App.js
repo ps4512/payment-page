@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PaymentFlow from './components/PaymentFlow';
 import './App.css';
 import logo from './logo.png'; 
-import checkout from './checkout.png'; 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AsyncPaymentStatus from './AsyncPaymentStatus';
 
@@ -33,7 +32,6 @@ const MainPage = () => {
     <div className="App">
       <div id="logo-container">
         <img src={logo} alt="Company Logo" className="logo" />
-        <img src={checkout} alt="Checkout Logo" className="logo" />
       </div>
       {isSubmitted ? (
         <PaymentFlow
