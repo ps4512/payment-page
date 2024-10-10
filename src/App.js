@@ -1,82 +1,88 @@
-import React, { useState } from 'react';
-import PaymentFlow from './components/PaymentFlow';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import logo from './logo.png'; 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AsyncPaymentStatus from './AsyncPaymentStatus';
+import { AdyenCheckout, Dropin } from '@adyen/adyen-web';
+import '@adyen/adyen-web/styles/adyen.css';
 
-const MainPage = () => {
+
+const Checkout = () => {
   const [customerName, setCustomerName] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const orderItem = { name: "Widget", price: 29.99 };
+  let paymentMethodsResponse;
 
-  const item = { description: 'Green T-shirt', unitPrice: 100, quantity: 2 };
-
-  const publicKey = 'pk_sbox_ahx7jdh2ompwcbpudatt76jcsq4';
-
-  const handleNameChange = (e) => {
-    setCustomerName(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setCustomerEmail(e.target.value);
-  };
-
-  const handleFormSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    alert(`Order placed for ${orderItem.name} by ${customerName}`);
   };
 
+  useEffect(async () => {
+    const postData = async () => {
+      try {
+        const response = await fetch('https://ps4512-paymentserver-qw5gp71ih8u.ws-us116.gitpod.io/payment-methods', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        console.log(data);
+        paymentMethodsResponse = data;
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
 
-  return (
-    <div className="App">
-      <div id="logo-container">
-        <img src={logo} alt="Company Logo" className="logo" />
-      </div>
-      {isSubmitted ? (
-        <PaymentFlow
-          publicKey={publicKey}
-          totalAmount={item.unitPrice * item.quantity}
-          customerName={customerName}
-          customerEmail={customerEmail}
-        />
-      ) : (
-        <>
-          <div className="order-summary">
-            <h2>Order Summary</h2>
-            <div>{item.description}</div>
-            <div>Quantity: {item.quantity}</div>
-            <div>Unit Price: £{(item.unitPrice / 100).toFixed(2)}</div>
-            <div>Total Price: £{((item.unitPrice * item.quantity) / 100).toFixed(2)}</div>
-          </div>
-          <form onSubmit={handleFormSubmit}>
-            <div>
-              <label>
-                Name:
-                <input type="text" value={customerName} onChange={handleNameChange} required />
-              </label>
-            </div>
-            <div>
-              <label>
-                Email:
-                <input type="email" value={customerEmail} onChange={handleEmailChange} required />
-              </label>
-            </div>
-            <button type="submit">Pay</button>
-          </form>
-        </>
-      )}
-    </div>
-  );
-};
+    postData();
+  }, []);
+
+  useEffect(() => {
+    if (paymentMethodsResponse) {
+      const configuration = {
+        clientKey: "test_HYAHXGJMHRBMVP3MBLIZEZ4UFA6KRRPW",
+        environment: "test",
+        amount: {
+          value: 1000,
+          currency: 'EUR',
+        },
+        locale: 'nl-NL',
+        countryCode: 'NL',
+        paymentMethodsResponse: paymentMethodsResponse,
+        onSubmit: async (state, component, actions) => {
+          // Handle submission
+        },
+        onAdditionalDetails: async (state, component, actions) => {
+          // Handle additional details
+        },
+        onPaymentCompleted: (result, component) => {
+          console.info(result, component);
+        },
+        onPaymentFailed: (result, component) => {
+          console.info(result, component);
+        },
+        onError: (error, component) => {
+          console.error(error.name, error.message, error.stack, component);
+        },
+      };
+  
+      const checkout = AdyenCheckout(configuration);
+      
+      // Ensure to mount only when the container exists
+      const dropinContainer = document.getElementById('dropin-container');
+      if (dropinContainer) {
+        new Dropin(checkout).mount(dropinContainer);
+      } else {
+        console.error("Drop-in container not found.");
+      }
+    }
+  }, [paymentMethodsResponse]);
+}
 
 function App() {
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MainPage/>}/>
-        <Route path="/result" element={<AsyncPaymentStatus />} />
+        <Route path="/" element={<Checkout/>}/>
       </Routes>
     </Router>
   );

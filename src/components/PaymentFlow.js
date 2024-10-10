@@ -11,7 +11,7 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
   useEffect(() => {
     const createPaymentSession = async () => {
       try {
-        const response = await axios.post('http://localhost:5002/create-payment-session', {
+        const response = await axios.post('https://5002-ps4512-paymentserver-qw5gp71ih8u.ws-us116.gitpod.io/create-payment-session', {
           amount: totalAmount,
           currency: "GBP",
           reference: "ORD-123A",
@@ -76,7 +76,7 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
 
     const handlePayment = async (paymentId) => {
       try {
-        const response = await axios.get(`http://localhost:5002/payment-details/${paymentId}`);
+        const response = await axios.get(`https://5002-ps4512-paymentserver-qw5gp71ih8u.ws-us116.gitpod.io/payment-details/${paymentId}`);
         console.log('Payment Details:', response.data);
         return response.data;
       } catch (error) {
@@ -92,7 +92,7 @@ const PaymentFlow = ({ publicKey, totalAmount, customerName, customerEmail}) => 
     const clearPaymentStatus = async () => {
       try {
         console.log("clearing payment status")
-        await axios.post('http://localhost:5002/clear-payment-status');
+        await axios.post('https://5002-ps4512-paymentserver-qw5gp71ih8u.ws-us116.gitpod.io/clear-payment-status');
       } catch (error) {
         console.log('clear status failed');
       }
