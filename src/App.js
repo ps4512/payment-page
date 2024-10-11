@@ -58,7 +58,10 @@ const Checkout = () => {
                     reference: "Your order number",
                     paymentMethod: paymentdata.paymentMethod,
                     returnUrl: "https://your-company.com/...",
-                    merchantAccount: "AdyenTechSupport_PengShao_TEST"
+                    merchantAccount: "AdyenTechSupport_PengShao_TEST",
+                    authenticationData: {
+                      attemptAuthentication: "always"
+                    }
                    }
                 ),
 
