@@ -6,16 +6,10 @@ import '@adyen/adyen-web/styles/adyen.css';
 
 
 const Checkout = () => {
-  const [customerName, setCustomerName] = useState('');
-  const orderItem = { name: "Widget", price: 29.99 };
-  let paymentMethodsResponse;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`Order placed for ${orderItem.name} by ${customerName}`);
-  };
+  const [paymentMethodsResponse, setPaymentMethodsResponse] = useState(null);
 
-  useEffect(async () => {
+  useEffect(() => {
     const postData = async () => {
       try {
         const response = await fetch('https://ps4512-paymentserver-qw5gp71ih8u.ws-us116.gitpod.io/payment-methods', {
@@ -26,7 +20,7 @@ const Checkout = () => {
         });
         const data = await response.json();
         console.log(data);
-        paymentMethodsResponse = data;
+        setPaymentMethodsResponse(data); // Update state with fetched data
       } catch (error) {
         console.error('Error:', error);
       }
