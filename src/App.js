@@ -57,7 +57,7 @@ const Checkout = () => {
                     amount,
                     reference: "Your order number",
                     paymentMethod: paymentdata.paymentMethod,
-                    returnUrl: "https://your-company.com/...",
+                    returnUrl: "https://3000-ps4512-paymentpage-n19h2oaqgu9.ws-us116.gitpod.io/redirect",
                     merchantAccount: "AdyenTechSupport_PengShao_TEST",
                     authenticationData: {
                       attemptAuthentication: "always"
@@ -109,9 +109,11 @@ const Checkout = () => {
           // Handle additional details
         },
         onPaymentCompleted: (result, component) => {
+          console.log("payment succeeded")
           console.info(result, component);
         },
         onPaymentFailed: (result, component) => {
+          console.log("payment failed")
           console.info(result, component);
         },
         onError: (error, component) => {
@@ -145,12 +147,51 @@ const Checkout = () => {
   return <div id="dropin-container"></div>;
 }
 
+const RedirectPage = () => {
+
+  const [paymentDetailsResponse, setPaymentDetailsResponse] = useState("");
+
+  useEffect(() => {
+    const getPaymentDetails = async () => {
+      try {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        const response = await fetch('http://localhost:5002/payment-details', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(
+            {
+              redirectResult: urlParams.get('redirectResult')
+            }
+          )
+        });
+        const data = await response.json();
+        setPaymentDetailsResponse(data); // Update state with fetched data
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    getPaymentDetails();
+  }, []);
+
+  return (
+      <div>
+          <h1> Payment Results: {paymentDetailsResponse.resultCode} </h1>
+      </div>
+  );
+};
+
 function App() {
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Checkout/>}/>
+        <Route path="/redirect" element={<RedirectPage/>}/>
       </Routes>
     </Router>
   );
