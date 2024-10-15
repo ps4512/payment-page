@@ -18,7 +18,7 @@ const Checkout = () => {
   useEffect(() => {
     const postData = async () => {
       try {
-        const response = await fetch('http://localhost:5002/payment-methods', {
+        const response = await fetch('https://a473-98-98-125-170.ngrok-free.app/payment-methods', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const Checkout = () => {
           // Handle submission
          async function makePaymentsCall(paymentdata, amount) {
             try {
-              const response = await fetch('http://localhost:5002/payments', {
+              const response = await fetch('https://a473-98-98-125-170.ngrok-free.app/payments', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -56,9 +56,14 @@ const Checkout = () => {
                   {
                     amount,
                     reference: "Your order number",
+                    // storePaymentMethod: true,
+                    shopperInteraction: "ContAuth",
+                    shopperReference: "Peng_Shao_Shopper_Reference",
                     paymentMethod: paymentdata.paymentMethod,
+                    enableOneClick: true,
                     returnUrl: "https://3000-ps4512-paymentpage-n19h2oaqgu9.ws-us116.gitpod.io/redirect",
                     merchantAccount: "AdyenTechSupport_PengShao_TEST",
+                    recurringProcessingModel: "CardOnFile",
                     authenticationData: {
                       attemptAuthentication: "always"
                     }
@@ -157,7 +162,7 @@ const RedirectPage = () => {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
 
-        const response = await fetch('http://localhost:5002/payment-details', {
+        const response = await fetch('https://a473-98-98-125-170.ngrok-free.app/payment-details', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
