@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AdyenCheckout, Dropin, Card } from '@adyen/adyen-web';
+import { AdyenCheckout, Dropin, Card, PayPal } from '@adyen/adyen-web';
 import '@adyen/adyen-web/styles/adyen.css';
 
 
@@ -18,7 +18,7 @@ const Checkout = () => {
   useEffect(() => {
     const postData = async () => {
       try {
-        const response = await fetch('https://a473-98-98-125-170.ngrok-free.app/payment-methods', {
+        const response = await fetch('http://localhost:5002/payment-methods', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const Checkout = () => {
           // Handle submission
          async function makePaymentsCall(paymentdata, amount) {
             try {
-              const response = await fetch('https://a473-98-98-125-170.ngrok-free.app/payments', {
+              const response = await fetch('http://localhost:5002/payments', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const Checkout = () => {
                     reference: "Your order number",
                     // storePaymentMethod: true,
                     shopperInteraction: "ContAuth",
-                    shopperReference: "Peng_Shao_Shopper_Reference",
+                    shopperReference: "Peng_Shao_Shopper_Reference_New",
                     paymentMethod: paymentdata.paymentMethod,
                     enableOneClick: true,
                     returnUrl: "https://3000-ps4512-paymentpage-n19h2oaqgu9.ws-us116.gitpod.io/redirect",
@@ -135,7 +135,7 @@ const Checkout = () => {
           // Create an instance of Drop-in.
           const dropin = new Dropin(checkout, {
           // Include the payment methods that imported.
-          paymentMethodComponents: [Card],
+          paymentMethodComponents: [Card, PayPal],
           // Mount it to the container you created.
           }).mount(dropinContainer);        
         } 
@@ -162,7 +162,7 @@ const RedirectPage = () => {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
 
-        const response = await fetch('https://a473-98-98-125-170.ngrok-free.app/payment-details', {
+        const response = await fetch('http://localhost:5002/payment-details', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
