@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AdyenCheckout, Dropin, Card, PayPal } from '@adyen/adyen-web';
+import { AdyenCheckout, Dropin, Card, PayPal, GooglePay, ApplePay } from '@adyen/adyen-web';
 import '@adyen/adyen-web/styles/adyen.css';
-
 
 const Checkout = () => {
 
@@ -37,14 +36,17 @@ const Checkout = () => {
   useEffect(() => {
     if (paymentMethodsResponse) {
       const configuration = {
-        clientKey: "test_HYAHXGJMHRBMVP3MBLIZEZ4UFA6KRRPW",
+        clientKey: "test_3HRWKFYEJJHPLDBBXR7UDOU4HYVQCGYZ",
         environment: "test",
         amount: AMOUNT,
         locale: LOCALE,
         countryCode: COUNTRYCODE,
         paymentMethodsResponse: paymentMethodsResponse,
+      
         onSubmit: async (state, component, actions) => {
           // Handle submission
+        
+          console.log("abcd" + JSON.stringify(state.data));
          async function makePaymentsCall(paymentdata, amount) {
             try {
               const response = await fetch('http://localhost:5002/payments', {
@@ -62,11 +64,35 @@ const Checkout = () => {
                     paymentMethod: paymentdata.paymentMethod,
                     enableOneClick: true,
                     returnUrl: "https://3000-ps4512-paymentpage-n19h2oaqgu9.ws-us116.gitpod.io/redirect",
-                    merchantAccount: "AdyenTechSupport_PengShao_TEST",
+                    merchantAccount: "AdyenTechSupport_PengAfPMarketplace_TEST",
                     recurringProcessingModel: "CardOnFile",
                     authenticationData: {
-                      attemptAuthentication: "always"
-                    }
+                      threeDSRequestData: {
+                        nativeThreeDS: "preferred"
+                      }
+                    },
+                    browserInfo: {
+                      userAgent: "",
+                      acceptHeader: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+                      language: "nl-NL",
+                      colorDepth: 24,
+                      screenHeight: 723,
+                      screenWidth: 1536,
+                      timeZoneOffset: 0,
+                      javaEnabled: true,
+                      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+                    },
+                    billingAddress: {
+                      street: "Infinite Loop",
+                      houseNumberOrName: "1",
+                      postalCode: "1011DJ",
+                      city: "Amsterdam",
+                      country: "NL"
+                    },
+                    shopperEmail: "s.hopper@example.com",
+                    shopperIP: "192.0.2.1",
+                    channel: "web",
+                    origin: window.location.origin,
                    }
                 ),
 
@@ -111,7 +137,28 @@ const Checkout = () => {
           }
         },
         onAdditionalDetails: async (state, component, actions) => {
-          // Handle additional details
+            console.log("on additional details");
+
+            const makePaymentDetails = async (redirectResult) => {
+        
+                const response = await fetch('http://localhost:5002/payment-details', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(
+                    {
+                      redirectResult: redirectResult
+                    }
+                  )
+                });
+                const data = await response.json();
+                console.log("additional details redirect result is: " + JSON.stringify(data))
+                return data;
+            }
+          	// Make the /payments/details call and pass the resultCode back to the Drop-in.
+            const { action, resultCode } = await makePaymentDetails(state.data);
+            actions.resolve({ resultCode });
         },
         onPaymentCompleted: (result, component) => {
           console.log("payment succeeded")
@@ -135,7 +182,7 @@ const Checkout = () => {
           // Create an instance of Drop-in.
           const dropin = new Dropin(checkout, {
           // Include the payment methods that imported.
-          paymentMethodComponents: [Card, PayPal],
+          paymentMethodComponents: [Card, PayPal, GooglePay, ApplePay],
           // Mount it to the container you created.
           }).mount(dropinContainer);        
         } 
