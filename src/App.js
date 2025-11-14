@@ -9,7 +9,7 @@ const Checkout = () => {
   const [paymentMethodsResponse, setPaymentMethodsResponse] = useState(null);
   const AMOUNT = {
     value: 1000,
-    currency: 'EUR',
+    currency: 'SGD',
   };
   const LOCALE = 'zh-CN';
   const COUNTRYCODE= 'NL';
@@ -36,7 +36,7 @@ const Checkout = () => {
   useEffect(() => {
     if (paymentMethodsResponse) {
       const configuration = {
-        clientKey: "test_3HRWKFYEJJHPLDBBXR7UDOU4HYVQCGYZ",
+        clientKey: "test_LZ6IE47AXFFFRKB6DDPJ7RXOPUDDIOIH",
         environment: "test",
         amount: AMOUNT,
         locale: LOCALE,
@@ -64,7 +64,7 @@ const Checkout = () => {
                     paymentMethod: paymentdata.paymentMethod,
                     enableOneClick: true,
                     returnUrl: "https://3000-ps4512-paymentpage-n19h2oaqgu9.ws-us116.gitpod.io/redirect",
-                    merchantAccount: "AdyenTechSupport_PengAfPMarketplace_TEST",
+                    merchantAccount: "PengShao_SGPartner_TEST",
                     recurringProcessingModel: "CardOnFile",
                     authenticationData: {
                       threeDSRequestData: {
@@ -165,8 +165,8 @@ const Checkout = () => {
           console.info(result, component);
         },
         onPaymentFailed: (result, component) => {
-          console.log("payment failed")
-          console.info(result, component);
+          //console.log("payment failed")
+          //console.info(result, component);
         },
         onError: (error, component) => {
           console.error(error.name, error.message, error.stack, component);
